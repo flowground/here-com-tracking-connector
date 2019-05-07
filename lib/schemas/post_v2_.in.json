@@ -1,0 +1,1026 @@
+{
+    "type": "object",
+    "properties": {
+        "authorization": {
+            "required": true,
+            "type": "string"
+        },
+        "async": {
+            "required": false,
+            "type": "boolean",
+            "default": false
+        },
+        "requestBody": {
+            "description": "A list of telemetry measurements made by the device.\n\nTimestamp cannot be more than 10 minutes in the future.\n\nExample of telemetry with GSM measurements\n---\n\n```\n[{\n    \"scan\": {\n        \"gsm\": [{\n            \"mcc\": 262,\n            \"mnc\": 1,\n            \"lac\": 5126,\n            \"cid\": 16504,\n            \"nmr\": [\n                 { \"bsic\": \"6\", \"bcch\": \"82\" },\n                 { \"bsic\": \"7\", \"bcch\": \"85\" },\n                 { \"bsic\": \"12\", \"bcch\": \"93\" },\n                 { \"bsic\": \"13\", \"bcch\": \"88\" },\n                 { \"bsic\": \"19\", \"bcch\": \"88\" }\n            ]\n        }]\n    },\n    \"payload\": {\n        \"sensor\": \"data\"\n    },\n    \"timestamp\": 1515169948976\n}]\n```\n\nExample of telemetry with WiFi\n---\n\n```\n[{\n    \"scan\": {\n        \"wlan\": [\n            {\"mac\": \"8C-1A-BF-20-66-AD\"},\n            {\"mac\": \"A0-E4-53-E9-66-A7\"},\n            {\"mac\": \"AC-4B-C8-34-F7-01\"},\n            {\"mac\": \"A0-21-95-57-79-06\"},\n            {\"mac\": \"00-18-56-51-54-FB\"},\n            {\"mac\": \"10-30-47-D2-54-55\"},\n            {\"mac\": \"B8-6B-23-09-87-B1\"},\n            {\"mac\": \"F4-55-95-11-2C-C1\"}\n        ]\n    },\n    \"payload\": {\n        \"sensor\": \"data\"\n    },\n    \"timestamp\": 1515169948976\n}]\n```\n",
+            "example": [
+                {
+                    "scan": {
+                        "gsm": [
+                            {
+                                "cid": 16504,
+                                "lac": 5126,
+                                "mcc": 262,
+                                "mnc": 1,
+                                "nmr": [
+                                    {
+                                        "bcch": "82",
+                                        "bsic": "6"
+                                    },
+                                    {
+                                        "bcch": "85",
+                                        "bsic": "7"
+                                    },
+                                    {
+                                        "bcch": "93",
+                                        "bsic": "12"
+                                    },
+                                    {
+                                        "bcch": "88",
+                                        "bsic": "13"
+                                    },
+                                    {
+                                        "bcch": "88",
+                                        "bsic": "19"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "timestamp": 1515169948976
+                }
+            ],
+            "items": {
+                "properties": {
+                    "payload": {
+                        "description": "An application-specific JSON object. HERE Tracking doesn't read this object but\nyou can use it to pass information to other applications. The maximum size is 1000B.\n",
+                        "type": "object"
+                    },
+                    "position": {
+                        "description": "The reported or determined location of the device",
+                        "properties": {
+                            "accuracy": {
+                                "description": "Uncertainty circle radius in meters (degree of confidence according to the 'confidence' parameter).",
+                                "minimum": 0,
+                                "type": "number"
+                            },
+                            "alt": {
+                                "description": "Altitude in meters (referenced to the WGS-84 ellipsoid) negative or positive.",
+                                "type": "number"
+                            },
+                            "altaccuracy": {
+                                "description": "Uncertainty of the altitude estimate in meters (degree of confidence according to the 'confidence' parameter).",
+                                "minimum": 0,
+                                "type": "number"
+                            },
+                            "confidence": {
+                                "description": "Confidence level in percent for the accuracy/uncertainty. If not specified, the default is 68 (this corresponds to a 68% probability that the true position is within the accuracy/uncertainty radius of the position; the higher the number, the greater the confidence level).",
+                                "maximum": 95,
+                                "minimum": 50,
+                                "type": "integer"
+                            },
+                            "floor": {
+                                "description": "The building where the measurements were taken",
+                                "properties": {
+                                    "id": {
+                                        "description": "The building id",
+                                        "maximum": 100,
+                                        "minimum": 1,
+                                        "type": "string"
+                                    },
+                                    "level": {
+                                        "description": "The floor in the building in integer format",
+                                        "maximum": 999,
+                                        "minimum": -999,
+                                        "type": "number"
+                                    },
+                                    "name": {
+                                        "description": "The building name",
+                                        "maximum": 255,
+                                        "minimum": 1,
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "name",
+                                    "level"
+                                ],
+                                "type": "object"
+                            },
+                            "heading": {
+                                "description": "GPS/GNSS heading in degrees, clockwise from true north. You must specify a value for this item when you specify a value for speed.",
+                                "maximum": 359,
+                                "minimum": 0,
+                                "type": "integer"
+                            },
+                            "lat": {
+                                "description": "Latitude in WGS-84 format, decimal representation ranging from -90 to 90.",
+                                "maximum": 90,
+                                "minimum": -90,
+                                "type": "number"
+                            },
+                            "lng": {
+                                "description": "Longitude in WGS-84 format, decimal representation ranging from -180 to 180.",
+                                "maximum": 180,
+                                "minimum": -180,
+                                "type": "number"
+                            },
+                            "satellitecount": {
+                                "description": "Number of GPS/GNSS satellites used for the calculation of the position fix. (\"gnss\" position type only)",
+                                "maximum": 50,
+                                "minimum": 1,
+                                "type": "integer"
+                            },
+                            "speed": {
+                                "description": "GPS/GNSS speed of the device (m/s). Position fixes at speed above the maximum should not be used for contribution. You must specify a value for this item when you specify a value for heading.",
+                                "maximum": 60,
+                                "minimum": 0,
+                                "type": "integer"
+                            },
+                            "type": {
+                                "description": "Position type, \"gnss\" (satellite based), \"cell\" or \"wlan\" (network based)",
+                                "type": "string"
+                            },
+                            "wlancount": {
+                                "description": "The total number of observed WLAN APs in the scan used for producing the position. (\"wlan\" position type only)",
+                                "maximum": 254,
+                                "minimum": 1,
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "lat",
+                            "lng",
+                            "accuracy"
+                        ],
+                        "type": "object"
+                    },
+                    "scan": {
+                        "description": "Radio measurements used for positioning or radio map contribution.\n",
+                        "properties": {
+                            "bt": {
+                                "description": "Bluetooth access points",
+                                "items": {
+                                    "description": "Bluetooth measurement. In addition to rss, one of mac, eddystoneId, or iBeaconId is required.",
+                                    "properties": {
+                                        "eddystoneId": {
+                                            "description": "Full Identifier as Base64 string. A combination of 10-byte Namespace component and a 6-byte Instance component",
+                                            "maximum": 24,
+                                            "minimum": 24,
+                                            "type": "string"
+                                        },
+                                        "iBeaconId": {
+                                            "description": "Full Identifier as Base64 string. A combination of 16-byte UUID + 2-byte major + 2-byte minor",
+                                            "maximum": 28,
+                                            "minimum": 28,
+                                            "type": "string"
+                                        },
+                                        "mac": {
+                                            "description": "The MAC address of the Bluetooth access point. MAC-48 address with colon (:) or hyphen (-) separators, upper or lower case hex digits. For privacy reasons positioning based on a single Bluetooth AP is not possible; there has to be at least one other matching WLAN or Bluetooth access point. Either MAC, EddystoneId, or iBeaconId is required.",
+                                            "type": "string"
+                                        },
+                                        "rss": {
+                                            "description": "Received signal strength (dBm) at the terminal",
+                                            "maximum": 0,
+                                            "minimum": -128,
+                                            "type": "integer"
+                                        },
+                                        "timestamp": {
+                                            "description": "Time of the measurement (UTC)",
+                                            "format": "date-time",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "rss"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 128,
+                                "type": "array"
+                            },
+                            "cdma": {
+                                "description": "CDMA cells",
+                                "items": {
+                                    "description": "CDMA measurement",
+                                    "properties": {
+                                        "baselat": {
+                                            "description": "Base station latitude (Optional)",
+                                            "maximum": 90,
+                                            "minimum": -90,
+                                            "type": "number"
+                                        },
+                                        "baselng": {
+                                            "description": "Base station longitude (Optional)",
+                                            "maximum": 180,
+                                            "minimum": -180,
+                                            "type": "number"
+                                        },
+                                        "bsid": {
+                                            "description": "Base Station ID, BID",
+                                            "maximum": 65535,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "channel": {
+                                            "description": "CDMA channel frequency (Optional, you must specify a value for this item when you specify a value for pnoffset)",
+                                            "maximum": 2047,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "nid": {
+                                            "description": "Network Id, NID",
+                                            "maximum": 65535,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "nmr": {
+                                            "description": "CDMA Network measurements (Optional)",
+                                            "items": {
+                                                "description": "CDMA Network measurement",
+                                                "properties": {
+                                                    "bsid": {
+                                                        "description": "Base Station ID (Optional)",
+                                                        "maximum": 65535,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "channel": {
+                                                        "description": "CDMA channel frequency",
+                                                        "maximum": 2047,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "frequency": {
+                                                        "description": "Deprecated. Use 'channel' instead.",
+                                                        "maximum": 2047,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "pilotpower": {
+                                                        "description": "Pilot Power (dBm) (Optional). If Pilot Power is not available directly, it needs to be calculated from Total Power in the band and Pilot Strength with respect to the Total Power. Pilot power less than -142dBm should be mapped to -142. Pilot power greater than -49dBm should be mapped to -49.",
+                                                        "maximum": -49,
+                                                        "minimum": -142,
+                                                        "type": "integer"
+                                                    },
+                                                    "pnoffset": {
+                                                        "description": "Pseudonoise offset",
+                                                        "maximum": 511,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "pnoffset",
+                                                    "channel"
+                                                ],
+                                                "type": "object"
+                                            },
+                                            "maxItems": 32,
+                                            "type": "array"
+                                        },
+                                        "pilotpower": {
+                                            "description": "Pilot Power (dBm) (Optional). If Pilot Power is not available directly, it needs to be calculated from Total Power in the band and Pilot Strength with respect to the Total Power. Pilot power less than -142dBm should be mapped to -142. Pilot power greater than -49dBm should be mapped to -49.",
+                                            "maximum": -49,
+                                            "minimum": -142,
+                                            "type": "integer"
+                                        },
+                                        "pnoffset": {
+                                            "description": "Pseudonoise offset (Optional, you must specify a value for this item when you specify a value for channel)",
+                                            "maximum": 511,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "rz": {
+                                            "description": "Registration zone (Optional)",
+                                            "maximum": 4095,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "sid": {
+                                            "description": "System Id, SID",
+                                            "maximum": 32767,
+                                            "minimum": 1,
+                                            "type": "integer"
+                                        },
+                                        "timestamp": {
+                                            "description": "Time of the cell measurement (UTC) (Optional)",
+                                            "format": "date-time",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "sid",
+                                        "nid",
+                                        "bsid"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 16,
+                                "type": "array"
+                            },
+                            "country": {
+                                "description": "Indicates in which country the WLAN APs are located (in case cell data is not present in radio_observations)",
+                                "properties": {
+                                    "mcc": {
+                                        "description": "Mobile Country Code",
+                                        "maximum": 999,
+                                        "minimum": 200,
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "mcc"
+                                ],
+                                "type": "object"
+                            },
+                            "gps": {
+                                "description": "Optionally supply this to improve HERE Tracking's positioning service by\ncontributing the scan data along with a GPS position.\n",
+                                "properties": {
+                                    "accuracy": {
+                                        "description": "Uncertainty circle radius in meters (degree of confidence according to the 'confidence' parameter).",
+                                        "minimum": 0,
+                                        "type": "number"
+                                    },
+                                    "alt": {
+                                        "description": "Altitude in meters (referenced to the WGS-84 ellipsoid) negative or positive.",
+                                        "type": "number"
+                                    },
+                                    "altaccuracy": {
+                                        "description": "Uncertainty of the altitude estimate in meters (degree of confidence according to the 'confidence' parameter).",
+                                        "minimum": 0,
+                                        "type": "number"
+                                    },
+                                    "heading": {
+                                        "description": "GPS/GNSS heading in degrees, clockwise from true north. You must specify a value for this item when you specify a value for speed.",
+                                        "maximum": 359,
+                                        "minimum": 0,
+                                        "type": "integer"
+                                    },
+                                    "lat": {
+                                        "description": "Latitude in WGS-84 format, decimal representation ranging from -90 to 90.",
+                                        "maximum": 90,
+                                        "minimum": -90,
+                                        "type": "number"
+                                    },
+                                    "lng": {
+                                        "description": "Longitude in WGS-84 format, decimal representation ranging from -180 to 180.",
+                                        "maximum": 180,
+                                        "minimum": -180,
+                                        "type": "number"
+                                    },
+                                    "satellitecount": {
+                                        "description": "Number of GPS/GNSS satellites used for the calculation of the position fix. (\"gnss\" position type only)",
+                                        "maximum": 50,
+                                        "minimum": 1,
+                                        "type": "integer"
+                                    },
+                                    "speed": {
+                                        "description": "GPS/GNSS speed of the device (m/s). Position fixes at speed above the maximum should not be used for contribution. You must specify a value for this item when you specify a value for heading.",
+                                        "maximum": 60,
+                                        "minimum": 0,
+                                        "type": "integer"
+                                    },
+                                    "timestamp": {
+                                        "description": "Milliseconds elapsed since 1 January 1970 00:00:00 UTC.",
+                                        "maximum": 4102448400000,
+                                        "minimum": 2,
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "lat",
+                                    "lng",
+                                    "accuracy"
+                                ],
+                                "type": "object"
+                            },
+                            "gsm": {
+                                "description": "GSM cells (GERAN)",
+                                "items": {
+                                    "description": "GSM measurement",
+                                    "properties": {
+                                        "bcch": {
+                                            "description": "Broadcast Control Channel (Synonymous to ARFCN = Absolute Radio Frequency Channel) (Optional, you must specify a value for this item when you specify a value for bsic).",
+                                            "maximum": 1023,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "bsic": {
+                                            "description": "Base Station Identity Code (for instance, color code) (Optional, you must specify a value for this item when you specify a value for bcch).",
+                                            "maximum": 63,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "cid": {
+                                            "description": "Cell Identifier, 16 bits. Mcc+mnc+lac+cid uniquely identifies the GSM cell.",
+                                            "maximum": 65535,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "lac": {
+                                            "description": "Location Area Code",
+                                            "maximum": 65535,
+                                            "minimum": 1,
+                                            "type": "integer"
+                                        },
+                                        "mcc": {
+                                            "description": "Mobile Country Code",
+                                            "maximum": 999,
+                                            "minimum": 200,
+                                            "type": "integer"
+                                        },
+                                        "mnc": {
+                                            "description": "Mobile Network Code",
+                                            "maximum": 999,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "nmr": {
+                                            "description": "Network measurements (Optional)",
+                                            "items": {
+                                                "description": "GSM Network measurement",
+                                                "properties": {
+                                                    "bcch": {
+                                                        "description": "Broadcast Control Channel (Synonymous to ARFCN = Absolute Radio Frequency Channel)",
+                                                        "maximum": 1023,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "bsic": {
+                                                        "description": "Base Station Identity Code (for instance, color code)",
+                                                        "maximum": 63,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "cid": {
+                                                        "description": "Cell Identifier (Optional)",
+                                                        "maximum": 65535,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "lac": {
+                                                        "description": "Location Area Code (Optional)",
+                                                        "maximum": 65535,
+                                                        "minimum": 1,
+                                                        "type": "integer"
+                                                    },
+                                                    "rxlevel": {
+                                                        "description": "Received Signal power (dBm) (Optional). Power less than -110dBm should be mapped to -110. Power greater than -25dBm should be mapped to -25.",
+                                                        "maximum": -25,
+                                                        "minimum": -110,
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "bsic",
+                                                    "bcch"
+                                                ],
+                                                "type": "object"
+                                            },
+                                            "maxItems": 16,
+                                            "type": "array"
+                                        },
+                                        "rxlevel": {
+                                            "description": "Received Signal power (dBm) (Optional). Power less than -110dBm should be mapped to -110. Power greater than -25dBm should be mapped to -25.",
+                                            "maximum": -25,
+                                            "minimum": -110,
+                                            "type": "integer"
+                                        },
+                                        "ta": {
+                                            "description": "Timing advance (Optional). Expressed in the units of GSM bits equaling to 48/13 μs ~ 1107 meters.",
+                                            "maximum": 63,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "timestamp": {
+                                            "description": "Time of the cell measurement (UTC) (Optional)",
+                                            "format": "date-time",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "mcc",
+                                        "mnc",
+                                        "lac",
+                                        "cid"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 16,
+                                "type": "array"
+                            },
+                            "lte": {
+                                "description": "LTE cells (E-UTRA, 4G)",
+                                "items": {
+                                    "description": "LTE measurement",
+                                    "properties": {
+                                        "cid": {
+                                            "description": "E-UTRA Cell Identifier, 28 bits (20 bits eNodeB and 8 bits Cell id). Mcc+mnc+cid uniquely identifies the LTE cell, tac is optional.",
+                                            "maximum": 268435455,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "earfcn": {
+                                            "description": "Evolved Absolute Radio Frequency Channel (Optional, you must specify a value for this item when you specify a value for pci)",
+                                            "maximum": 65535,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "mcc": {
+                                            "description": "Mobile Country Code",
+                                            "maximum": 999,
+                                            "minimum": 200,
+                                            "type": "integer"
+                                        },
+                                        "mnc": {
+                                            "description": "Mobile Network Code",
+                                            "maximum": 999,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "nmr": {
+                                            "description": "Network measurements (Optional)",
+                                            "items": {
+                                                "description": "LTE Network measurement",
+                                                "properties": {
+                                                    "cid": {
+                                                        "description": "E-UTRA Cell Identifier (Optional)",
+                                                        "maximum": 268435455,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "earfcn": {
+                                                        "description": "Evolved Absolute Radio Frequency Channel",
+                                                        "maximum": 65535,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "pci": {
+                                                        "description": "Physical Cell Identity",
+                                                        "maximum": 503,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "rsrp": {
+                                                        "description": "Reference Signal Received Power = RSRP (dBm) (Optional, you must specify a value for this item when you specify a value for rsrq). Power less than -140dBm should be mapped to -140. Power greater than -44dBm should be mapped to -44.",
+                                                        "maximum": -44,
+                                                        "minimum": -140,
+                                                        "type": "integer"
+                                                    },
+                                                    "rsrq": {
+                                                        "description": "Reference Signal Received Quality = RSRQ (dB) (Optional). Values less than -19.5dB should be mapped to -19.5, and values greater than -3dB should be mapped to -3dB.",
+                                                        "maximum": -3,
+                                                        "minimum": -19.5,
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "pci",
+                                                    "earfcn"
+                                                ],
+                                                "type": "object"
+                                            },
+                                            "maxItems": 16,
+                                            "type": "array"
+                                        },
+                                        "pci": {
+                                            "description": "Physical Cell Identity (Optional, you must specify a value for this item when you specify a value for earfcn)",
+                                            "maximum": 503,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "rsrp": {
+                                            "description": "Reference Signal Received Power = RSRP (dBm) (Optional, you must specify a value for this item when you specify a value for rsrq). Power less than -140dBm should be mapped to -140. Power greater than -44dBm should be mapped to -44.",
+                                            "maximum": -44,
+                                            "minimum": -140,
+                                            "type": "integer"
+                                        },
+                                        "rsrq": {
+                                            "description": "Reference Signal Received Quality = RSRQ (dB) (Optional). Values less than -19.5dB should be mapped to -19.5, and values greater than -3dB should be mapped to -3dB.",
+                                            "maximum": -3,
+                                            "minimum": -19.5,
+                                            "type": "number"
+                                        },
+                                        "ta": {
+                                            "description": "Timing Advance (Optional). Expressed in the units of 16*Ts (16 Basic time units) = 16/(15000*2048) seconds ~ 156meters. For reference see TS 36.213 and 36.211.",
+                                            "maximum": 1282,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "tac": {
+                                            "description": "Tracking Area Code (Optional)",
+                                            "maximum": 65535,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "timestamp": {
+                                            "description": "Time of the cell measurement (UTC) (Optional)",
+                                            "format": "date-time",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "mcc",
+                                        "mnc",
+                                        "cid"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 16,
+                                "type": "array"
+                            },
+                            "tdscdma": {
+                                "description": "TD-SCDMA cell (UTRA-TDD, 3G UMTS TDD)",
+                                "items": {
+                                    "description": "TD-SCDMA measurement",
+                                    "properties": {
+                                        "cellparams": {
+                                            "description": "Cell Parameters ID (CDMA Spreading Code ID) (Optional, you must specify a value for this item when you specify a value for uarfcn).",
+                                            "maximum": 127,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "cid": {
+                                            "description": "UTRAN Cell Identifier, 28 bits (12 bits RNC and 16 bits Cell id). Mcc+mnc+cid uniquely identifies the TDSCDMA cell, lac is optional.",
+                                            "maximum": 268435455,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "lac": {
+                                            "description": "Location Area Code (Optional)",
+                                            "maximum": 65535,
+                                            "minimum": 1,
+                                            "type": "integer"
+                                        },
+                                        "mcc": {
+                                            "description": "Mobile Country Code",
+                                            "maximum": 999,
+                                            "minimum": 200,
+                                            "type": "integer"
+                                        },
+                                        "mnc": {
+                                            "description": "Mobile Network Code",
+                                            "maximum": 999,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "nmr": {
+                                            "description": "Network measurements (Optional). Maximum of 8 uarfcndl times maximum of 32 psc.",
+                                            "items": {
+                                                "description": "TD-SCDMA Network measurement",
+                                                "properties": {
+                                                    "cellparams": {
+                                                        "description": "Cell Parameters ID (CDMA Spreading Code ID)",
+                                                        "maximum": 127,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "cid": {
+                                                        "description": "Cell Identifier (uc-id) (Optional)",
+                                                        "maximum": 268435455,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "pathloss": {
+                                                        "description": "UTRAN path loss (dB) (Optional, you must specify a value for this item when you specify a value for rscp).",
+                                                        "maximum": 158,
+                                                        "minimum": 46,
+                                                        "type": "integer"
+                                                    },
+                                                    "rscp": {
+                                                        "description": "Received Signal Code Power = RSCP (dBm) (Optional, you must specify a value for this item when you specify a value for pathloss). Power less than -120dBm should be mapped to -120. Power greater than -25dBm should be mapped to -25.",
+                                                        "maximum": -25,
+                                                        "minimum": -120,
+                                                        "type": "integer"
+                                                    },
+                                                    "uarfcn": {
+                                                        "description": "Carrier frequency of a UTRA-TDD Serving Cell",
+                                                        "maximum": 16383,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "uarfcn",
+                                                    "cellparams"
+                                                ],
+                                                "type": "object"
+                                            },
+                                            "maxItems": 256,
+                                            "type": "array"
+                                        },
+                                        "pathloss": {
+                                            "description": "UTRAN path loss (dB) (Optional, you must specify a value for this item when you specify a value for rscp).",
+                                            "maximum": 158,
+                                            "minimum": 46,
+                                            "type": "integer"
+                                        },
+                                        "rscp": {
+                                            "description": "Received Signal Code Power = RSCP (dBm) (Optional, you must specify a value for this item when you specify a value for pathloss). Power less than -120dBm should be mapped to -120. Power greater than -25dBm should be mapped to -25.",
+                                            "maximum": -25,
+                                            "minimum": -120,
+                                            "type": "integer"
+                                        },
+                                        "ta": {
+                                            "description": "Timing advance (Optional). Round-Trip distance presented in the units of 4*c/7.68e6 ~156 meters. That is, the scaling factor is 4 times the chip length at chip rate of 7.68 Mchips/s. Note that at chip rates 1.28 Mchips/s and 3.84 Mchips/s you need to scale according to chip length of 7.68 Mchips/s, that is, multiply by 6 or 2 if needed.",
+                                            "maximum": 1530,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "timestamp": {
+                                            "description": "Time of the cell measurement (UTC) (Optional)",
+                                            "format": "date-time",
+                                            "type": "string"
+                                        },
+                                        "uarfcn": {
+                                            "description": "Carrier frequency of a UTRA-TDD Serving Cell (Optional, you must specify a value for this item when you specify a value for cellparams).",
+                                            "maximum": 16383,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "mcc",
+                                        "mnc",
+                                        "cid"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 16,
+                                "type": "array"
+                            },
+                            "wcdma": {
+                                "description": "WCDMA cells (UTRA-FDD, 3G UMTS)",
+                                "items": {
+                                    "description": "WCDMA measurement",
+                                    "properties": {
+                                        "cid": {
+                                            "description": "UTRAN Cell Identifier, 28 bits (12 bits RNC and 16 bits Cell id). Mcc+mnc+cid uniquely identifies the WCDMA cell, lac is optional.",
+                                            "maximum": 268435455,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "lac": {
+                                            "description": "Location Area Code (Optional)",
+                                            "maximum": 65535,
+                                            "minimum": 1,
+                                            "type": "integer"
+                                        },
+                                        "mcc": {
+                                            "description": "Mobile Country Code",
+                                            "maximum": 999,
+                                            "minimum": 200,
+                                            "type": "integer"
+                                        },
+                                        "mnc": {
+                                            "description": "Mobile Network Code",
+                                            "maximum": 999,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "nmr": {
+                                            "description": "Network measurements (Optional). Maximum of 8 uarfcndl times maximum of 32 psc.",
+                                            "items": {
+                                                "description": "WCDMA Network measurement",
+                                                "properties": {
+                                                    "cid": {
+                                                        "description": "UTRAN Cell Identifier (uc-id) (Optional)",
+                                                        "maximum": 268435455,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "pathloss": {
+                                                        "description": "UTRAN path loss (dB) (Optional).",
+                                                        "maximum": 158,
+                                                        "minimum": 46,
+                                                        "type": "integer"
+                                                    },
+                                                    "psc": {
+                                                        "description": "Primary Scrambling Code (Primary CPICH, Primary Control Pilot Channel)",
+                                                        "maximum": 511,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "rscp": {
+                                                        "description": "Received Signal Code Power = RSCP (dBm) (Optional). Power less than -120dBm should be mapped to -120. Power greater than -25dBm should be mapped to -25.",
+                                                        "maximum": -25,
+                                                        "minimum": -120,
+                                                        "type": "integer"
+                                                    },
+                                                    "uarfcndl": {
+                                                        "description": "Downlink frequency of a UTRA-FDD Serving Cell",
+                                                        "maximum": 16383,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "uarfcndl",
+                                                    "psc"
+                                                ],
+                                                "type": "object"
+                                            },
+                                            "maxItems": 256,
+                                            "type": "array"
+                                        },
+                                        "pathloss": {
+                                            "description": "UTRAN path loss (dB) (Optional).",
+                                            "maximum": 158,
+                                            "minimum": 46,
+                                            "type": "integer"
+                                        },
+                                        "psc": {
+                                            "description": "Primary Scrambling Code (Primary CPICH, Primary Control Pilot Channel) (Optional, you must specify a value for this item when you specify a value for uarfcndl).",
+                                            "maximum": 511,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        },
+                                        "rscp": {
+                                            "description": "Received Signal Code Power = RSCP (dBm) (Optional). Power less than -120dBm should be mapped to -120. Power greater than -25dBm should be mapped to -25.",
+                                            "maximum": -25,
+                                            "minimum": -120,
+                                            "type": "integer"
+                                        },
+                                        "timestamp": {
+                                            "description": "Time of the cell measurement (UTC) (Optional)",
+                                            "format": "date-time",
+                                            "type": "string"
+                                        },
+                                        "uarfcndl": {
+                                            "description": "Downlink frequency of a UTRA-FDD Serving Cell (Optional, you must specify a value for this item when you specify a value for psc).",
+                                            "maximum": 16383,
+                                            "minimum": 0,
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "mcc",
+                                        "mnc",
+                                        "cid"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 16,
+                                "type": "array"
+                            },
+                            "wlan": {
+                                "description": "WLAN access points",
+                                "items": {
+                                    "description": "WLAN measurement",
+                                    "properties": {
+                                        "band": {
+                                            "description": "Frequency range (GHz). Allowed values are 2.4, 3.65, and 5. (Possible future values include 4.9, 5.9, 60, and 900.)",
+                                            "type": "number"
+                                        },
+                                        "mac": {
+                                            "description": "The MAC address of the WLAN access point. MAC-48 address with colon (:) or hyphen (-) separators, upper or lower case hex digits. Note that if the SSID contains postfix \"_nomap\", the AP should not be used for positioning. For privacy reasons positioning based on a single WLAN AP is not possible; there has to be at least one other matching wlan or cell.",
+                                            "type": "string"
+                                        },
+                                        "powrx": {
+                                            "description": "Received signal level (dBm) at the terminal (Optional)",
+                                            "maximum": 0,
+                                            "minimum": -128,
+                                            "type": "integer"
+                                        },
+                                        "timestamp": {
+                                            "description": "Time of the wlan measurement (UTC) (Optional)",
+                                            "format": "date-time",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "mac"
+                                    ],
+                                    "type": "object"
+                                },
+                                "maxItems": 128,
+                                "type": "array"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "system": {
+                        "description": "Values within the device configuration that are used by HERE Tracking for\nvarious application flows.\n\nThis object can be read by HERE Tracking whereas the content of the payload is\nopaque.\n\nstateVersion can be provided by the device, denoting the version of the last\nknown desired state seen by the device.\n",
+                        "properties": {
+                            "client": {
+                                "description": "Information about the client Device.\n",
+                                "example": {
+                                    "firmware": "heroltexx...",
+                                    "homenetwork": [],
+                                    "manufacturer": "Samsung",
+                                    "model": "SM-G930F",
+                                    "name": "HERE Tracker",
+                                    "platform": "Android",
+                                    "version": "1.6.1"
+                                },
+                                "properties": {
+                                    "firmware": {
+                                        "description": "Device firmware version information",
+                                        "maxLength": 150,
+                                        "minLength": 1,
+                                        "type": "string"
+                                    },
+                                    "homenetwork": {
+                                        "description": "Information about subscriber home network - 3GPP MCC+MNC or 3GPP2 SID+NID. Dual-SIM devices can provide information on both two subscriptions.",
+                                        "items": {
+                                            "description": "Network information. Either MCC + MNC or SID + NID attribute pair is required.",
+                                            "properties": {
+                                                "mcc": {
+                                                    "description": "Mobile Country Code",
+                                                    "maximum": 999,
+                                                    "minimum": 200,
+                                                    "type": "integer"
+                                                },
+                                                "mnc": {
+                                                    "description": "Mobile Network Code",
+                                                    "maximum": 999,
+                                                    "minimum": 0,
+                                                    "type": "integer"
+                                                },
+                                                "nid": {
+                                                    "description": "Network Id, NID",
+                                                    "maximum": 65535,
+                                                    "minimum": 0,
+                                                    "type": "integer"
+                                                },
+                                                "sid": {
+                                                    "description": "System Id, SID",
+                                                    "maximum": 32767,
+                                                    "minimum": 1,
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "maxItems": 2,
+                                        "type": "array"
+                                    },
+                                    "manufacturer": {
+                                        "description": "Manufacturer of the device (hardware)",
+                                        "maxLength": 50,
+                                        "minLength": 2,
+                                        "type": "string"
+                                    },
+                                    "model": {
+                                        "description": "Model of the device (hardware)",
+                                        "maxLength": 50,
+                                        "minLength": 1,
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "description": "Name of the client software accessing the HERE API",
+                                        "maxLength": 50,
+                                        "minLength": 3,
+                                        "type": "string"
+                                    },
+                                    "platform": {
+                                        "description": "Software platform information of the device, for example operating system name and version.",
+                                        "maxLength": 50,
+                                        "minLength": 3,
+                                        "type": "string"
+                                    },
+                                    "version": {
+                                        "description": "Version of the client software in format X.Y.Z, where X [0..255] is a major, Y [0..255] is a minor, and Z [0..65535] is a build version number. Increase the version/build number for each release of the client.",
+                                        "maxLength": 13,
+                                        "minLength": 3,
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "phoneNumber": {
+                                "description": "The phone number of the device's SIM card in the international E.164 format. You should prefix all country codes with \"+\" instead of \"00\".\n",
+                                "example": "+491234567890",
+                                "pattern": "^\\+[1-9]\\d{1,14}$",
+                                "type": "string"
+                            },
+                            "stateVersion": {
+                                "description": "The version of the state of a device. This should be incremented only by HERE Tracking.\n",
+                                "minimum": 0,
+                                "type": "integer"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "timestamp": {
+                        "description": "Milliseconds elapsed since 1 January 1970 00:00:00 UTC.\n\nThis describes when the reported measurements were taken.\n\nIf the device does not provide a timestamp, Here Tracking writes its own system time\nhere at ingestion time.\n",
+                        "maximum": 4102448400000,
+                        "minimum": 2,
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "timestamp"
+                ],
+                "type": "object"
+            },
+            "type": "array"
+        },
+        "x_request_id": {
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+        }
+    }
+}

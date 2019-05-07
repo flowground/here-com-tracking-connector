@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "properties": {
+        "appId": {
+            "required": true,
+            "type": "string",
+            "minLength": 8
+        },
+        "x_request_id": {
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+        }
+    }
+}

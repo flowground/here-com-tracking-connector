@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "properties": {
+        "deviceId": {
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+        },
+        "x_request_id": {
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+        }
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "type": "object",
+    "properties": {
+        "trackingId": {
+            "required": true,
+            "type": "string"
+        },
+        "state": {
+            "required": true,
+            "type": "string",
+            "enum": [
+                "desired",
+                "reported"
+            ]
+        },
+        "selector": {
+            "required": true,
+            "type": "string"
+        },
+        "x_request_id": {
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+        }
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "type": "object",
+    "properties": {
+        "channelName": {
+            "required": true,
+            "type": "string",
+            "pattern": "([a-zA-Z0-9]+\\.?)+$"
+        }
+    }
+}

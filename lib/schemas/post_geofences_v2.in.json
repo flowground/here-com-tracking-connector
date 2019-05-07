@@ -1,0 +1,53 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "discriminator": {
+                "propertyName": "type"
+            },
+            "example": {
+                "definition": {
+                    "center": {
+                        "lat": 52.5308398,
+                        "lng": 13.38490035
+                    },
+                    "radius": 100
+                },
+                "description": "An area in berlin",
+                "name": "Berlin Office",
+                "type": "circle"
+            },
+            "properties": {
+                "definition": {
+                    "type": "object"
+                },
+                "description": {
+                    "description": "A description of the area that the geofence encloses and the purpose of the geofence.",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "A human-readable name for the geofence.",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "The type of geofence shape. A geofence can be a circle or a polygon.",
+                    "enum": [
+                        "circle",
+                        "polygon"
+                    ],
+                    "type": "string"
+                }
+            },
+            "required": [
+                "type",
+                "definition"
+            ],
+            "type": "object"
+        },
+        "x_request_id": {
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+        }
+    }
+}

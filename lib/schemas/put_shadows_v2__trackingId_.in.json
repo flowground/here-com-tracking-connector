@@ -1,0 +1,286 @@
+{
+    "type": "object",
+    "properties": {
+        "trackingId": {
+            "required": true,
+            "type": "string"
+        },
+        "requestBody": {
+            "additionalProperties": false,
+            "description": "A shadow object with either desired or reported state update.\nThe same request can't update properties in both reported and desired state.\n",
+            "example": {
+                "reported": {
+                    "payload": {
+                        "color": "blue",
+                        "velocity": 100
+                    }
+                }
+            },
+            "properties": {
+                "desired": {
+                    "description": "The desired state of the device.\n\nNote that if a timestamp is provided in this object, it is ignored. The\ncurrent system time is always used.\n",
+                    "properties": {
+                        "payload": {
+                            "description": "An application-specific JSON object. HERE Tracking doesn't read this object but\nyou can use it to pass information to other applications. The maximum size is 1000B.\n",
+                            "type": "object"
+                        },
+                        "system": {
+                            "description": "Contains values for the device configuration. HERE Tracking uses these values\nfor various application flows.\n\nUnlike the payload object, HERE Tracking reads the contents of the system object.\n",
+                            "properties": {
+                                "rate": {
+                                    "description": "This can be used to specify the rates at which the device performs certain tasks.",
+                                    "properties": {
+                                        "distanceM": {
+                                            "description": "The device should send an update if it moves more than this distance in meters",
+                                            "minimum": 0,
+                                            "type": "number"
+                                        },
+                                        "sampleMs": {
+                                            "description": "The rate at which to sample signals in milliseconds",
+                                            "minimum": 0,
+                                            "type": "number"
+                                        },
+                                        "sendMs": {
+                                            "description": "The rate at which to send sample results in milliseconds",
+                                            "minimum": 0,
+                                            "type": "number"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "type": "object"
+                },
+                "reported": {
+                    "description": "The last known state reported by the device.\n",
+                    "properties": {
+                        "payload": {
+                            "description": "An application-specific JSON object. HERE Tracking doesn't read this object but\nyou can use it to pass information to other applications. The maximum size is 1000B.\n",
+                            "type": "object"
+                        },
+                        "position": {
+                            "description": "The reported or determined location of the device",
+                            "properties": {
+                                "accuracy": {
+                                    "description": "Uncertainty circle radius in meters (degree of confidence according to the 'confidence' parameter).",
+                                    "minimum": 0,
+                                    "type": "number"
+                                },
+                                "alt": {
+                                    "description": "Altitude in meters (referenced to the WGS-84 ellipsoid) negative or positive.",
+                                    "type": "number"
+                                },
+                                "altaccuracy": {
+                                    "description": "Uncertainty of the altitude estimate in meters (degree of confidence according to the 'confidence' parameter).",
+                                    "minimum": 0,
+                                    "type": "number"
+                                },
+                                "confidence": {
+                                    "description": "Confidence level in percent for the accuracy/uncertainty. If not specified, the default is 68 (this corresponds to a 68% probability that the true position is within the accuracy/uncertainty radius of the position; the higher the number, the greater the confidence level).",
+                                    "maximum": 95,
+                                    "minimum": 50,
+                                    "type": "integer"
+                                },
+                                "floor": {
+                                    "description": "The building where the measurements were taken",
+                                    "properties": {
+                                        "id": {
+                                            "description": "The building id",
+                                            "maximum": 100,
+                                            "minimum": 1,
+                                            "type": "string"
+                                        },
+                                        "level": {
+                                            "description": "The floor in the building in integer format",
+                                            "maximum": 999,
+                                            "minimum": -999,
+                                            "type": "number"
+                                        },
+                                        "name": {
+                                            "description": "The building name",
+                                            "maximum": 255,
+                                            "minimum": 1,
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "name",
+                                        "level"
+                                    ],
+                                    "type": "object"
+                                },
+                                "heading": {
+                                    "description": "GPS/GNSS heading in degrees, clockwise from true north. You must specify a value for this item when you specify a value for speed.",
+                                    "maximum": 359,
+                                    "minimum": 0,
+                                    "type": "integer"
+                                },
+                                "lat": {
+                                    "description": "Latitude in WGS-84 format, decimal representation ranging from -90 to 90.",
+                                    "maximum": 90,
+                                    "minimum": -90,
+                                    "type": "number"
+                                },
+                                "lng": {
+                                    "description": "Longitude in WGS-84 format, decimal representation ranging from -180 to 180.",
+                                    "maximum": 180,
+                                    "minimum": -180,
+                                    "type": "number"
+                                },
+                                "satellitecount": {
+                                    "description": "Number of GPS/GNSS satellites used for the calculation of the position fix. (\"gnss\" position type only)",
+                                    "maximum": 50,
+                                    "minimum": 1,
+                                    "type": "integer"
+                                },
+                                "speed": {
+                                    "description": "GPS/GNSS speed of the device (m/s). Position fixes at speed above the maximum should not be used for contribution. You must specify a value for this item when you specify a value for heading.",
+                                    "maximum": 60,
+                                    "minimum": 0,
+                                    "type": "integer"
+                                },
+                                "type": {
+                                    "description": "Position type, \"gnss\" (satellite based), \"cell\" or \"wlan\" (network based)",
+                                    "type": "string"
+                                },
+                                "wlancount": {
+                                    "description": "The total number of observed WLAN APs in the scan used for producing the position. (\"wlan\" position type only)",
+                                    "maximum": 254,
+                                    "minimum": 1,
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "lat",
+                                "lng",
+                                "accuracy"
+                            ],
+                            "type": "object"
+                        },
+                        "system": {
+                            "description": "Values within the device configuration that are used by HERE Tracking for\nvarious application flows.\n\nThis object can be read by HERE Tracking whereas the content of the payload is\nopaque.\n\nstateVersion can be provided by the device, denoting the version of the last\nknown desired state seen by the device.\n",
+                            "properties": {
+                                "client": {
+                                    "description": "Information about the client Device.\n",
+                                    "example": {
+                                        "firmware": "heroltexx...",
+                                        "homenetwork": [],
+                                        "manufacturer": "Samsung",
+                                        "model": "SM-G930F",
+                                        "name": "HERE Tracker",
+                                        "platform": "Android",
+                                        "version": "1.6.1"
+                                    },
+                                    "properties": {
+                                        "firmware": {
+                                            "description": "Device firmware version information",
+                                            "maxLength": 150,
+                                            "minLength": 1,
+                                            "type": "string"
+                                        },
+                                        "homenetwork": {
+                                            "description": "Information about subscriber home network - 3GPP MCC+MNC or 3GPP2 SID+NID. Dual-SIM devices can provide information on both two subscriptions.",
+                                            "items": {
+                                                "description": "Network information. Either MCC + MNC or SID + NID attribute pair is required.",
+                                                "properties": {
+                                                    "mcc": {
+                                                        "description": "Mobile Country Code",
+                                                        "maximum": 999,
+                                                        "minimum": 200,
+                                                        "type": "integer"
+                                                    },
+                                                    "mnc": {
+                                                        "description": "Mobile Network Code",
+                                                        "maximum": 999,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "nid": {
+                                                        "description": "Network Id, NID",
+                                                        "maximum": 65535,
+                                                        "minimum": 0,
+                                                        "type": "integer"
+                                                    },
+                                                    "sid": {
+                                                        "description": "System Id, SID",
+                                                        "maximum": 32767,
+                                                        "minimum": 1,
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "maxItems": 2,
+                                            "type": "array"
+                                        },
+                                        "manufacturer": {
+                                            "description": "Manufacturer of the device (hardware)",
+                                            "maxLength": 50,
+                                            "minLength": 2,
+                                            "type": "string"
+                                        },
+                                        "model": {
+                                            "description": "Model of the device (hardware)",
+                                            "maxLength": 50,
+                                            "minLength": 1,
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "description": "Name of the client software accessing the HERE API",
+                                            "maxLength": 50,
+                                            "minLength": 3,
+                                            "type": "string"
+                                        },
+                                        "platform": {
+                                            "description": "Software platform information of the device, for example operating system name and version.",
+                                            "maxLength": 50,
+                                            "minLength": 3,
+                                            "type": "string"
+                                        },
+                                        "version": {
+                                            "description": "Version of the client software in format X.Y.Z, where X [0..255] is a major, Y [0..255] is a minor, and Z [0..65535] is a build version number. Increase the version/build number for each release of the client.",
+                                            "maxLength": 13,
+                                            "minLength": 3,
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "phoneNumber": {
+                                    "description": "The phone number of the device's SIM card in the international E.164 format. You should prefix all country codes with \"+\" instead of \"00\".\n",
+                                    "example": "+491234567890",
+                                    "pattern": "^\\+[1-9]\\d{1,14}$",
+                                    "type": "string"
+                                },
+                                "stateVersion": {
+                                    "description": "The version of the state of a device. This should be incremented only by HERE Tracking.\n",
+                                    "minimum": 0,
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "timestamp": {
+                            "description": "Milliseconds elapsed since 1 January 1970 00:00:00 UTC.\n\nThis describes when the reported measurements were taken.\n\nIf the device does not provide a timestamp, Here Tracking writes its own system time\nhere at ingestion time.\n",
+                            "maximum": 4102448400000,
+                            "minimum": 2,
+                            "type": "integer"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "content_length": {
+            "required": true,
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000
+        }
+    }
+}

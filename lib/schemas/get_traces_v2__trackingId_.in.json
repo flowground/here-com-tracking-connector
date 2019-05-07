@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "properties": {
+        "before": {
+            "required": false,
+            "type": "number",
+            "minimum": 1
+        },
+        "after": {
+            "required": false,
+            "type": "number",
+            "minimum": 0
+        },
+        "pageToken": {
+            "required": false,
+            "type": "string"
+        },
+        "count": {
+            "required": false,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 1000
+        },
+        "filter": {
+            "type": "boolean",
+            "default": false
+        }
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "description": "An object containing the email address and password of the user to be logged in.",
+            "properties": {
+                "email": {
+                    "description": "The email address of the user",
+                    "minLength": 1,
+                    "type": "string"
+                },
+                "password": {
+                    "description": "The password of the user",
+                    "minLength": 1,
+                    "type": "string"
+                }
+            },
+            "required": [
+                "email",
+                "password"
+            ],
+            "type": "object"
+        },
+        "x_request_id": {
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "type": "object",
+    "properties": {
+        "x_confirm": {
+            "required": true,
+            "type": "string",
+            "enum": [
+                "true"
+            ]
+        }
+    }
+}

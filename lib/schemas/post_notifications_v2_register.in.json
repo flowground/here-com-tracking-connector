@@ -1,0 +1,31 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "additionalProperties": false,
+            "example": {
+                "type": "webhook",
+                "url": "https://example.com/call/this/web/hook"
+            },
+            "properties": {
+                "type": {
+                    "description": "The type of notification channel to be created",
+                    "enum": [
+                        "webhook"
+                    ],
+                    "type": "string"
+                },
+                "url": {
+                    "description": "Required for type webhook. A URL for webhook notifications capable of receiving POST requests.\n",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "x_request_id": {
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+        }
+    }
+}

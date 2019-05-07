@@ -1,0 +1,15 @@
+{
+    "name": "here-com-tracking-connector",
+    "version": "2.0.0",
+    "description": "HERE Tracking is a cloud product designed to address location tracking problems for a wide range of Location IoT industry verticals.\n\nHERE Tracking exposes a set of REST APIs and client libraries to enable location tracking and geo-fencing for a variety of device form-factors including small-footprint (small memory and processing power) devices. HERE Tracking also includes end-user applications on mobile and web to be used as reference apps to demonstrate the product capabilities.",
+    "main": "component.json",
+    "dependencies": {
+        "elasticio-node": "0.0.9",
+        "elasticio-sailor-nodejs": "^2.2.1",
+        "swagger-client": "^3.8.22"
+    },
+    "author": {
+        "name": "Deutsche Telekom AG"
+    },
+    "license": "Apache-2.0"
+}

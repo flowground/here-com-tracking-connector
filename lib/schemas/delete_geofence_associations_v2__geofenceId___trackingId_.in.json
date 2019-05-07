@@ -1,0 +1,19 @@
+{
+    "type": "object",
+    "properties": {
+        "geofenceId": {
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+        },
+        "trackingId": {
+            "required": true,
+            "type": "string"
+        },
+        "x_request_id": {
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+        }
+    }
+}

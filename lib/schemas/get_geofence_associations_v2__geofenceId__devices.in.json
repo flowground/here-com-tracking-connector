@@ -1,0 +1,25 @@
+{
+    "type": "object",
+    "properties": {
+        "geofenceId": {
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+        },
+        "pageToken": {
+            "required": false,
+            "type": "string"
+        },
+        "count": {
+            "required": false,
+            "type": "integer",
+            "maximum": 100,
+            "default": 100
+        },
+        "x_request_id": {
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+        }
+    }
+}

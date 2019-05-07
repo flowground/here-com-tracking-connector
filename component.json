@@ -1,0 +1,998 @@
+{
+    "title": "HERE Tracking",
+    "description": "HERE Tracking is a cloud product designed to address location tracking problems for a wide range of Location IoT industry verticals.\n\nHERE Tracking exposes a set of REST APIs and client libraries to enable location tracking and geo-fencing for a variety of device form-factors including small-footprint (small memory and processing power) devices. HERE Tracking also includes end-user applications on mobile and web to be used as reference apps to demonstrate the product capabilities.",
+    "docsUrl": "",
+    "url": "https://api.apis.guru/v2/specs/here.com/tracking/2.0.0/swagger.json",
+    "envVars": {},
+    "credentials": {
+        "fields": {
+            "server": {
+                "label": "Server",
+                "viewClass": "SelectView",
+                "model": [
+                    "https://tracking.api.here.com/",
+                    "--- Custom URL"
+                ],
+                "required": true
+            },
+            "otherServer": {
+                "label": "Custom Server URL",
+                "viewClass": "TextFieldView"
+            },
+            "authBearer": {
+                "label": "Authorization (authBearer)",
+                "viewClass": "TextFieldView",
+                "note": "Users are authenticated using an OAuth 1.0 bearer token obtained using the `/users/v2/login` endpoint.\n\nYou must provide a valid username and password to obtain a bearer token.\n"
+            },
+            "deviceToken": {
+                "label": "Authorization (deviceToken)",
+                "viewClass": "TextFieldView",
+                "note": "Devices are authenticated using an OAuth 1.0 bearer token obtained using the `/v2/token` endpoint.\n"
+            },
+            "signedRequest": {
+                "label": "Authorization (signedRequest)",
+                "viewClass": "TextFieldView",
+                "note": "HERE Tracking requires that you sign your requests for tokens. The signature method uses the OAuth 1.0 standard. For more information on this standard, see the [OAuth Core 1.0](https://oauth.net/core/1.0/) specification.\n\n> **Note:** You must create a new signature for each token request to HERE Tracking. Signatures can only be used once.\n\nCreate the Signature Base String\n---\n\nThe first step in creating a signature is to create the signature base string. This string contains the parameters to use when generating the signature.\n\n*1. To begin, make sure you have the information listed in the following table.*\n\n| Parameter                | Description                              |\n| ------------------------ | -----------------------------------------|\n| oauth\\_consumer\\_key     | The device ID for which you want to generate a token. |\n| oauth\\_signature\\_method | Always use \"HMAC-SHA256\".                 |\n| oauth\\_timestamp         | The number of seconds since the Unix epoch at the point the request is generated. This must be within 10 seconds of the timestamp returned by the `/v2/timestamp` endpoint. |\n| oauth\\_nonce             | A unique string for this signature. The string cannot have been used in a previous signature. Each token generation request to HERE Tracking must have a unique signature, and the value in this parameter is what is used to ensure the signature is unique. |\n| oauth\\_version           | Always use \"1.0\".                         |\n\n*2. Combine these values into a single string by following these steps:*\n\n   1. URL encode every key and value.\n   2. Sort the list of key-value pairs alphabetically by key.\n   3. Concatenate each key/value pair, separating each with an ampersand character (\"&\").\n\nThe result is a parameter string that looks like this (line breaks are added for legibility):\n\n   ```\n   oauth_consumer_key=47164fb0-b7b3-49e8-891b-650270b82cf2\n   &oauth_nonce=LIIpk4\n   &oauth_signature_method=HMAC-SHA256\n   &oauth_timestamp=1513634609\n   &oauth_version=1.0\n   ```\n\n*3. Combine the HTTP method, base URL, and parameter string into a single string called the \"base string\". This will be the string from which the signature is generated. The base string is in this format:*\n\n   ```\n   POST&https://tracking.api.here.com/v2/token&<URL encoded parameter string>\n   ```\n\n   The base string consists of:\n\n   1. The HTTP method in caps (POST) followed by an ampersand (\"&\")\n   2. The URL of the HERE Tracking token endpoint followed by an ampersand (\"&\")\n   3. The URL-encoded parameter string.\n\n   For example (line breaks are added for legibility):\n\n   ```\n   POST\n    &https%3A%2F%2Ftracking.api.here.com%2Fv2%2Ftoken\n    &oauth_consumer_key%3D47164fb0-b7b3-49e8-891b-650270b82cf2%26\n    oauth_nonce%3DLIIpk4%26oauth_signature_method%3DHMAC-SHA256%26\n    oauth_timestamp%3D1513634609%26oauth_version%3D1.0\n   ```\n\n   > **Note:** The URL-encoded base string should contain exactly two ampersands (\"&\").\n\nCreate the signature\n---\n\nThe signing key used to sign the base string is the `deviceSecret` followed by an ampersand (\"&\").\n\nCreate the signature by passing the signature base string and the signing key to the `HMAC-SHA256` hashing algorithm and converting the result to a `base64` string. Then, use the signature to request a token.\n\nRequest the token\n---\n\nMake a `POST` request to this endpoint with an `Authorization` header constructed from the above parameters and the generated signature.\n\nExample:\n\n```\n    Authorization: OAuth oauth_consumer_key=\"47164fb0-b7b3-49e8-891b-650270b82cf2\",\n        oauth_signature_method=\"HMAC-SHA256\",\n        oauth_timestamp=\"1513634609\",\n        oauth_nonce=\"LIIpk4\",\n        oauth_version=\"1.0\",\n        oauth_signature=\"pQ9EJX14L736B%2Br7uZl4yQlO6Xw%3D\"\n```\n"
+            }
+        }
+    },
+    "triggers": {
+        "startFlow": {
+            "main": "./lib/triggers/startFlow.js",
+            "type": "polling",
+            "title": "Start Flow",
+            "fields": {}
+        }
+    },
+    "actions": {
+        "get_device_associations_v2_health": {
+            "main": "./lib/actions/get_device_associations_v2_health.js",
+            "title": "Gets service health",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_device_associations_v2_health.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_device_associations_v2_version": {
+            "main": "./lib/actions/get_device_associations_v2_version.js",
+            "title": "Gets service version",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_device_associations_v2_version.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_device_associations_v2__trackingId__geofences": {
+            "main": "./lib/actions/get_device_associations_v2__trackingId__geofences.js",
+            "title": "Retrieves geofences associated with the device",
+            "description": "Returns all fences tracking id has been associated with",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_device_associations_v2__trackingId__geofences.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_geofence_associations_v2_health": {
+            "main": "./lib/actions/get_geofence_associations_v2_health.js",
+            "title": "Gets service health",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_geofence_associations_v2_health.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_geofence_associations_v2_version": {
+            "main": "./lib/actions/get_geofence_associations_v2_version.js",
+            "title": "Gets service version",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_geofence_associations_v2_version.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_geofence_associations_v2__geofenceId__devices": {
+            "main": "./lib/actions/get_geofence_associations_v2__geofenceId__devices.js",
+            "title": "Gets devices associated with this geofence",
+            "description": "This returns a list of devices that are associated with this geofence.\n\nNote: A device appearing in this list does not mean the device is inside the geofence.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_geofence_associations_v2__geofenceId__devices.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "delete_geofence_associations_v2__geofenceId___trackingId_": {
+            "main": "./lib/actions/delete_geofence_associations_v2__geofenceId___trackingId_.js",
+            "title": "Disassociates a device and a geofence",
+            "description": "Notification will no longer be generated when the device enters or exits this geofence.",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/delete_geofence_associations_v2__geofenceId___trackingId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "put_geofence_associations_v2__geofenceId___trackingId_": {
+            "main": "./lib/actions/put_geofence_associations_v2__geofenceId___trackingId_.js",
+            "title": "Associates a device with a geofence",
+            "description": "Notifications will be generated when the device enters or exits this geofence",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/put_geofence_associations_v2__geofenceId___trackingId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "delete_geofences_v2": {
+            "main": "./lib/actions/delete_geofences_v2.js",
+            "title": "Deletes all geofences",
+            "description": "Deletes all geofences created by the provided user account.\n\nAs an extra safety measure, you must also supply the header `x-confirm`\nwith the value `true`. If this header is not explicitly specified on a\n**Delete All** request, the request fails.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/delete_geofences_v2.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_geofences_v2": {
+            "main": "./lib/actions/get_geofences_v2.js",
+            "title": "Gets all geofences",
+            "description": "Provides all geofence definitions in a paginated JSON oject.",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_geofences_v2.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "post_geofences_v2": {
+            "main": "./lib/actions/post_geofences_v2.js",
+            "title": "Creates a geofence",
+            "description": "You can specify a geofence as a circle or as a polygon. You can also assign\na name and a description to each geofence to help identify them. If no name\nis assigned, the geofence is named using a unique ID.\n\nCircle\n---\n\nSpecify the coordinates of the center point of the circle and a radius in\nmeters.\n\n```json\n    {\n        \"name\": \"Home\"\n        \"definition\": {\n            \"center\": {\n                \"lat\": 52.5308398,\n                \"lng\": 13.38490035\n            },\n            \"radius\": 100\n        },\n        \"description\": \"Small area around my house.\"\n    }\n```\n\nPolygon\n---\n\nSpecify an array of points. A minimum of three points are required.\n\n*NOTE: If the points do not describe a closed polygon, the polygon is\nautomatically closed between the last and first points.*\n\n```json\n    {\n        \"name\": \"Work\"\n        \"definition\": {\n            \"points\": [{\n                \"lat\": 52.5308398,\n                \"lng\": 13.38490035\n            }, {\n                \"lat\": 52.530443,\n                \"lng\": 13.38482003\n            }, {\n                \"lat\": 52.5308298,\n                \"lng\": 13.38492235\n            }]\n        },\n        \"description\": \"The area around work.\"\n    }\n```\n\nSuccessful requests have the HTTP status 201 and the response body provides\nthe ID of the created geofence.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/post_geofences_v2.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_geofences_v2_health": {
+            "main": "./lib/actions/get_geofences_v2_health.js",
+            "title": "Gets service health",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_geofences_v2_health.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_geofences_v2_version": {
+            "main": "./lib/actions/get_geofences_v2_version.js",
+            "title": "Gets service version",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_geofences_v2_version.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "delete_geofences_v2__geofenceId_": {
+            "main": "./lib/actions/delete_geofences_v2__geofenceId_.js",
+            "title": "Deletes a geofence",
+            "description": "Deletes a single geofence definition based on the provided geofence ID.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/delete_geofences_v2__geofenceId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_geofences_v2__geofenceId_": {
+            "main": "./lib/actions/get_geofences_v2__geofenceId_.js",
+            "title": "Gets a single geofence",
+            "description": "Provides the details of a single geofence definition such as the shape,\nname and description.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_geofences_v2__geofenceId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "put_geofences_v2__geofenceId_": {
+            "main": "./lib/actions/put_geofences_v2__geofenceId_.js",
+            "title": "Updates a single geofence",
+            "description": "Update the geofence shape, name or description. After a successful update,\nthe response provides updated geofence details.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/put_geofences_v2__geofenceId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_notifications_v2_health": {
+            "main": "./lib/actions/get_notifications_v2_health.js",
+            "title": "Gets service health",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_notifications_v2_health.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "post_notifications_v2_register": {
+            "main": "./lib/actions/post_notifications_v2_register.js",
+            "title": "Registers for notifications",
+            "description": "Registers users for notifications when a device transitions into or out of\na geofence.\n\nThe input data can be only the following:\n * A URL to receive webhook notifications\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/post_notifications_v2_register.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "delete_notifications_v2_registration__channelName_": {
+            "main": "./lib/actions/delete_notifications_v2_registration__channelName_.js",
+            "title": "Unregisters from notifications",
+            "description": "Unregister from notifications for the specified channel.\n\nThe only channel name currently supported is 'webhook' for webhook notifications\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/delete_notifications_v2_registration__channelName_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_notifications_v2_registrations": {
+            "main": "./lib/actions/get_notifications_v2_registrations.js",
+            "title": "Gets all registered notification channels",
+            "description": "Gets a list of all previously registered notification channels.\n\nThe responded channel name(s) will be 'webhook' if a webhook URL has been registered\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_notifications_v2_registrations.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_notifications_v2_version": {
+            "main": "./lib/actions/get_notifications_v2_version.js",
+            "title": "Gets service version",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_notifications_v2_version.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_registry_v2_devices__deviceId_": {
+            "main": "./lib/actions/get_registry_v2_devices__deviceId_.js",
+            "title": "Gets the trackingId for a device",
+            "description": "When provided with a deviceId, this endpoint returns the tracking ID for a previously claimed device.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_registry_v2_devices__deviceId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "put_registry_v2_devices__deviceId_": {
+            "main": "./lib/actions/put_registry_v2_devices__deviceId_.js",
+            "title": "Claims a device",
+            "description": "Claim a device to a user. Before a device is claimed, it cannot complete\nlogin and any data sent to the ingestion endpoint will be ignored. Once a\ndevice is claimed, its data is stored and available to its owner.\n\nWhen a device is claimed, it will be assigned a trackingID. This is the\nidentifier in HERE Tracking that the data is associated with. Having a\nseparate deviceId and trackingId means that devices can have their ownership\ntransferred without having to create and install a new deviceId and\ndeviceSecret.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/put_registry_v2_devices__deviceId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_registry_v2_health": {
+            "main": "./lib/actions/get_registry_v2_health.js",
+            "title": "Gets service health",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_registry_v2_health.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_registry_v2_version": {
+            "main": "./lib/actions/get_registry_v2_version.js",
+            "title": "Gets service version",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_registry_v2_version.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "post_registry_v2__appId__devices": {
+            "main": "./lib/actions/post_registry_v2__appId__devices.js",
+            "title": "Creates credentials for multiple devices",
+            "description": "Starts a batch job to create credentials for the number of devices specified in the body.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/post_registry_v2__appId__devices.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_registry_v2__appId__licenseCount": {
+            "main": "./lib/actions/get_registry_v2__appId__licenseCount.js",
+            "title": "get count of created licenses for a given vendor's app id",
+            "description": "Retrieves the count of already created licenses\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_registry_v2__appId__licenseCount.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "post_registry_v2__appId__one_device": {
+            "main": "./lib/actions/post_registry_v2__appId__one_device.js",
+            "title": "Creates credentials for a single device",
+            "description": "The credentials will be created. The ID and secret will instantly be returned in the body.\n\nIf autoclaim=true, the created device is immediately bound to the requesting account.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/post_registry_v2__appId__one_device.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_registry_v2__jobId__results": {
+            "main": "./lib/actions/get_registry_v2__jobId__results.js",
+            "title": "Gets the job results",
+            "description": "This returns the results of the given batch job if the job has completed.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_registry_v2__jobId__results.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_registry_v2__jobId__status": {
+            "main": "./lib/actions/get_registry_v2__jobId__status.js",
+            "title": "Gets the job status",
+            "description": "Use this endpoint to check the progress of a previously created\ncredentials request.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_registry_v2__jobId__status.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "delete_registry_v2__trackingId_": {
+            "main": "./lib/actions/delete_registry_v2__trackingId_.js",
+            "title": "Unclaims a device",
+            "description": "Removes the association between the user and the device. The device is no longer able to generate data for the user and can now be registered by another user (or the same user again).",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/delete_registry_v2__trackingId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_registry_v2__trackingId_": {
+            "main": "./lib/actions/get_registry_v2__trackingId_.js",
+            "title": "Gets the deviceId",
+            "description": "When provided with a trackingId, this endpoint returns the deviceId for a previously claimed device.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_registry_v2__trackingId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "post_shadows_v2_batch": {
+            "main": "./lib/actions/post_shadows_v2_batch.js",
+            "title": "Gets a batch of device shadows",
+            "description": "Provides shadow objects for multiple devices. You can get shadows for a\nmaximum of 20 devices per request.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/post_shadows_v2_batch.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_shadows_v2_health": {
+            "main": "./lib/actions/get_shadows_v2_health.js",
+            "title": "Gets service health",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_shadows_v2_health.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_shadows_v2_version": {
+            "main": "./lib/actions/get_shadows_v2_version.js",
+            "title": "Gets service version",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_shadows_v2_version.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "delete_shadows_v2__trackingId_": {
+            "main": "./lib/actions/delete_shadows_v2__trackingId_.js",
+            "title": "Clears the device shadow",
+            "description": "Deletes the information inside a device's shadow object. The shadow object\nitself is retained, but all values for `desired` and `reported`\nproperties are cleared.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/delete_shadows_v2__trackingId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_shadows_v2__trackingId_": {
+            "main": "./lib/actions/get_shadows_v2__trackingId_.js",
+            "title": "Gets the device shadow",
+            "description": "Provides a shadow object that contains `reported` and `desired` properties\nfor a device configuration. When setting the header parameters, make sure\nthat you provide a HERE Account token that allows read access.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_shadows_v2__trackingId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "put_shadows_v2__trackingId_": {
+            "main": "./lib/actions/put_shadows_v2__trackingId_.js",
+            "title": "Updates the device shadow",
+            "description": "Updates the device shadow that is stored in HERE Tracking.\n\nThe device shadow contains 'reported' and 'desired' configuration states\nfor a device.\n\nRequest\n---\n\nThe body is a shadow object with either an update to the `desired` or\n`reported` configuration state.\n\nYou cannot use the same request to update the `desired` and `reported`\nproperties simultaneously. Instead, use separate requests for each type of\nconfiguration state.\n\nResponse\n---\n\nThe response body is a shadow object that shows the difference between the\n`reported` and the `desired` states. It contains properties that don't\nmatch across the two configurations.\n\nThe response example shows the response to the previous request example\nwhere the `desired` state was updated.\n\nIf all `reported` and `desired` properties match, the response object\ncontains only the trackingId and timestamp properties.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/put_shadows_v2__trackingId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_shadows_v2__trackingId___state_": {
+            "main": "./lib/actions/get_shadows_v2__trackingId___state_.js",
+            "title": "Gets the value for a property",
+            "description": "Gets the value for the requested state. You can use request either \n`desired` or `reported` device state.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_shadows_v2__trackingId___state_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_shadows_v2__trackingId___state___selector_": {
+            "main": "./lib/actions/get_shadows_v2__trackingId___state___selector_.js",
+            "title": "Gets the value for a property",
+            "description": "Gets the value for a single property in the given state. You can use\nJSON selectors to select values for `desired` or `reported` properties.\nYou can also reference a property by name, but if the property contains\nan object, the entire object is returned rather than a distinct value.\n\nThe JSON selector can be nested like this: `payload/time/minutes`\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_shadows_v2__trackingId___state___selector_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_traces_v2_health": {
+            "main": "./lib/actions/get_traces_v2_health.js",
+            "title": "Gets service health",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_traces_v2_health.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_traces_v2_version": {
+            "main": "./lib/actions/get_traces_v2_version.js",
+            "title": "Gets service version",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_traces_v2_version.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "delete_traces_v2__trackingId_": {
+            "main": "./lib/actions/delete_traces_v2__trackingId_.js",
+            "title": "Deletes the entire history of the device",
+            "description": "Deletes all historical data for a device including **traces** and **transitions**.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/delete_traces_v2__trackingId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_traces_v2__trackingId_": {
+            "main": "./lib/actions/get_traces_v2__trackingId_.js",
+            "title": "Gets the trace within a specified time range",
+            "description": "Gets all traces that were recorded within the specified time range.\n\nDefine the range with \"before\" and \"after\" timestamps. A successful\nresponse contains an array of traces that were recorded after the\nfirst timestamp and before the second.\n\nTraces are returned as an array in descending order based on timestamp.\n\nNote:\n---\n\nTo ensure a fast response, always provide both `before` and `after` timestamps.\n\nIf no values are supplied `after` defaults to 0, and `before` defaults\nto the current system time.\n\nThe `count` and `pageToken` parameters provide pagination for results\nwhere a large volume of data matches the given time range.\n\n\nIn this case, `count` is the number of records returned per page along with\na `pageToken` header in the returned HTTP response. The `pageToken` indicates\nthe next available page in the matching result set. To get the next page of\nrecords, submit `pageToken` as a query parameter in your next request. The default\nnumber of records per page is 1000, which is also the maximum number of\nrecords per page.\n\nIn case of success, the response body contains an array of trace\nsamples between the given timestamps (after <= timestamp <= before).\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_traces_v2__trackingId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_transitions_v2_devices__trackingId_": {
+            "main": "./lib/actions/get_transitions_v2_devices__trackingId_.js",
+            "title": "Gets transitions for a device",
+            "description": "Gets all transitions that were recorded within a specific time range. This\nlog also includes events when the accuracy radius of the reported position\nintersects with a geofence boundary.\n\nYou define the range with `before` and `after` timestamps. A successful\nresponse contains an array of transitions that were recorded after the\nfirst timestamp and before the second.\n\nTransitions are listed in descending order based on the timestamp.\n\nNote:\n---\n\nTo ensure a fast response, always provide both `before` and `after` timestamps.\n\nIf no values are supplied `after` defaults to 0, and `before` defaults\nto the current system time.\n\nThe `count` and `pageToken` parameters provide pagination for results\nwhere a large volume of data matches the given time range.\n\nIn this case, `count` is the number of records returned per page along with\na `pageToken` header in the returned HTTP response. The `pageToken` indicates\nthe next available page in the matching result set. To get the next page of\nrecords, submit `pageToken` as a query parameter in your next request. The default\nnumber of records per page is 1000, which is also the maximum number of\nrecords per page.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_transitions_v2_devices__trackingId_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_transitions_v2_health": {
+            "main": "./lib/actions/get_transitions_v2_health.js",
+            "title": "Gets service health",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_transitions_v2_health.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_transitions_v2_version": {
+            "main": "./lib/actions/get_transitions_v2_version.js",
+            "title": "Gets service version",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_transitions_v2_version.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_users_v2_devices": {
+            "main": "./lib/actions/get_users_v2_devices.js",
+            "title": "Gets all devices owned by a given user",
+            "description": "Provides an array of the TrackingIds for devices that the given user owns.",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_users_v2_devices.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_users_v2_health": {
+            "main": "./lib/actions/get_users_v2_health.js",
+            "title": "Gets service health",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_users_v2_health.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "post_users_v2_login": {
+            "main": "./lib/actions/post_users_v2_login.js",
+            "title": "Gets a valid access token",
+            "description": "Use this to get a valid access token for a given HERE Account email and password.",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/post_users_v2_login.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "post_users_v2_refresh": {
+            "main": "./lib/actions/post_users_v2_refresh.js",
+            "title": "Gets a valid access token given a refreshToken",
+            "description": "Use this to get a valid access token for a given HERE Account access token and refresh token.",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/post_users_v2_refresh.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_users_v2_version": {
+            "main": "./lib/actions/get_users_v2_version.js",
+            "title": "Gets service version",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_users_v2_version.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "post_v2_": {
+            "main": "./lib/actions/post_v2_.js",
+            "title": "Sends data and receives shadow",
+            "description": "A device uses its access token to send data to HERE Tracking.\n\nIf the request is set to be synchronous, the response will be\nthe desired state of the device shadow. If the request is set\nto be asynchronous, the response will be empty.\n\nTo have a position associated with a device, the request body must contain\neither a `position` or a `scan` object (see the object definitions for\ndetails). If both are provided, the `scan` is resolved to a `position`. The\nmore accurate of the two positions (provided and resolved) is used as the\ndevice's position.\n\nIf a `scan` is provided, HERE Tracking will resolve the position asynchronously\nand return the desired state. The shadow will then be updated\nimmediately after responding.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/post_v2_.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_v2_health": {
+            "main": "./lib/actions/get_v2_health.js",
+            "title": "Gets service health",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_v2_health.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_v2_timestamp": {
+            "main": "./lib/actions/get_v2_timestamp.js",
+            "title": "Gets the current timestamp",
+            "description": "Returns the server timestamp used to check the validity of a device's OAuth 1.0 header. Devices must synchronise with this timestamp to avoid clock skew.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_v2_timestamp.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "post_v2_token": {
+            "main": "./lib/actions/post_v2_token.js",
+            "title": "Requests a token for a registered device",
+            "description": "HERE Tracking requires that you sign your requests for tokens.\nThe signature method uses the OAuth 1.0 standard. For more\ninformation on this standard, see the [OAuth Core\n1.0](https://oauth.net/core/1.0/) specification.\n\n> See the Authentication section for details on how to generate a signed token request.\n",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/post_v2_token.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        },
+        "get_v2_version": {
+            "main": "./lib/actions/get_v2_version.js",
+            "title": "Gets service version",
+            "fields": {
+                "verbose": {
+                    "viewClass": "CheckBoxView",
+                    "label": "Debug this step (log more data)"
+                }
+            },
+            "metadata": {
+                "in": "./lib/schemas/get_v2_version.in.json",
+                "out": {
+                    "type": "object"
+                }
+            }
+        }
+    }
+}

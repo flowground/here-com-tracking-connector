@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "properties": {
+        "pageToken": {
+            "required": false,
+            "type": "string"
+        },
+        "count": {
+            "required": false,
+            "type": "integer",
+            "maximum": 100,
+            "default": 100
+        }
+    }
+}
